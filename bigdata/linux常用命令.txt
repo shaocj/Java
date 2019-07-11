@@ -1,0 +1,317 @@
+﻿
+返回到/itcast目录，查看一下README文件有多单词，多少个少行
+wc -w README
+wc -l README
+-m 统计文本字符数
+-w 统计文本字数
+-l 统计文本行数
+
+
+2、文件相关命令
+
+查看文件详情：stat a.txt/file a
+查看文件大小：du -h/-ah
+vi撤销修改：ctrl + u (undo)。恢复：ctrl + r (redo）
+名令设置别名(重启后无效)：alias ll="ls -l"。取消：unalias ll
+如果想让别名重启后仍然有效需要修改：vi ~/.bashrc
+创建空白文件：touch a.txt
+将一个文件的内容复制到里另一个文件中：cat a.txt > b.txt
+
+3、系统命令
+
+修改主机名(重启后无效)：hostname hadoop
+修改主机名(重启后永久生效)：vi /ect/sysconfig/network
+centos7修改主机名（永久有效）：hostnamectl set-hostname 名字 或者vi /etc/hostname
+
+修改IP(重启后无效)：ifconfig eth0 192.168.12.22
+修改IP(重启后永久生效)：vi /etc/sysconfig/network-scripts/ifcfg-eth0
+查看系统信：uname -a或者uname -r
+查看查看分区:df -h
+为用户配置sudo权限
+用root编辑 vi /etc/sudoers
+在文件的如下位置，为hadoop添加一行即可
+root    ALL=(ALL)       ALL     
+hadoop  ALL=(ALL)       ALL
+然后，hadoop用户就可以用sudo来执行系统级别的指令
+[hadoop@shizhan ~]$ sudo useradd huangxiaoming
+
+%%首先生成密钥对
+ssh-keygen   (提示时，直接回车即可)
+%%再将A自己的公钥拷贝并追加到B的授权列表文件authorized_keys中
+ssh-copy-id   B
+
+******后台服务管理
+service network status   查看指定服务的状态
+service network stop     停止指定服务
+service network start    启动指定服务
+service network restart  重启指定服务
+service --status-all  查看系统中所有的后台服务
+
+设置后台服务的自启配置
+chkconfig   查看所有服务器自启配置
+chkconfig iptables off   关掉指定服务的自动启动
+chkconfig iptables on   开启指定服务的自动启动
+
+*****系统启动级别管理
+vi  /etc/inittab
+
+# Default runlevel. The runlevels used are:
+#   0 - halt (Do NOT set initdefault to this)
+#   1 - Single user mode
+#   2 - Multiuser, without NFS (The same as 3, if you do not have networking)
+#   3 - Full multiuser mode
+#   4 - unused
+#   5 - X11
+#   6 - reboot (Do NOT set initdefault to this)
+#
+id:3:initdefault:
+
+查看Ubuntu 哪个发行版本： 
+lsb_release -a
+查看内核版本、工具链版本：
+cat /proc/version
+查看内核版本：
+uname -a
+4、用户和组
+添加一个tom用户，设置它属于users组，并添加注释信息：useradd -g users -c "hr tom" tom
+设置tom用户的密码
+passwd tom
+修改tom用户的登陆名为tomcat
+usermod -l tomcat tom
+将tomcat添加到sys和root组中
+usermod -G sys,root tomcat
+查看tomcat的组信息
+groups tomcat
+添加一个交america的组
+groupadd america
+
+将jerry添加到america组中
+usermod -g america jerry
+
+将tomcat用户从root组和sys组删除
+gpasswd -d tomcat root
+gpasswd -d tomcat sys
+
+将america组名修改为am
+groupmod -n am america
+
+5、权限
+创建a.txt和b.txt文件，将他们设为其拥有者和所在组可写入，但其他以外的人则不可写入:
+chmod ug+w,o-w a.txt b.txt
+将/itcast目录下的所有文件与子目录的拥有者设为root，用户拥有组为users
+chown -R root:users /itcast
+
+6、vim
+dd:删除一行
+3dd：删除3行
+yy:复制一行
+3yy:复制3行
+p:粘贴
+u:undo
+ctrl + r:redo
+设置行数：set nu
+整页翻页 ctrl-f(就是向下) ctrl-b 翻半页ctrl-d ctlr-u
+******一些常用快捷键
+一些有用的快捷键（在一般模式下使用）：
+a  在光标后一位开始插入
+A   在该行的最后插入
+I   在该行的最前面插入
+gg   直接跳到文件的首行
+G    直接跳到文件的末行
+dd   删除行，如果  5dd   ，则一次性删除光标后的5行
+yy  复制当前行,  复制多行，则  3yy，则复制当前行附近的3行
+p   粘贴
+v  进入字符选择模式，选择完成后，按y复制，按p粘贴
+ctrl+v  进入块选择模式，选择完成后，按y复制，按p粘贴
+shift+v  进入行选择模式，选择完成后，按y复制，按p粘贴
+/you       效果：查找文件中出现的you，并定位到第一个找到的地方，按n可以定位到下一个匹配位置（按N定位到上一个）
+more   somefile     可以翻页查看, 下翻一页(空格)    上翻一页（b）   退出（q）
+less   somefile      可以翻页查看,下翻一页(空格)    上翻一页（b），上翻一行(↑)  下翻一行（↓）  可以搜索关键字（/keyword）
+tail -10  install.log   查看文件尾部的10行
+tail -f install.log    小f跟踪文件的唯一inode号，就算文件改名后，还是跟踪原来这个inode表示的文件
+tail -F install.log    大F按照文件名来跟踪
+
+
+安装JDK
+	*添加执行权限 
+		chmod u+x jdk-6u45-linux-i586.bin
+	*解压
+		./jdk-6u45-linux-i586.bin
+	*在/usr目录下创建java目录
+		mkdir /usr/java
+	*将/soft目录下的解压的jdk1.6.0_45剪切到/usr/java目录下
+		mv jdk1.6.0_45/ /usr/java/
+	*添加环境变量
+		vim /etc/profile
+		*在/etc/profile文件最后添加
+			export JAVA_HOME=/usr/java/jdk1.6.0_45
+			export CLASSPATH=$JAVA_HOME/lib
+			export PATH=$PATH:$JAVA_HOME/bin
+	*更新配置
+		source /etc/profile
+
+7、解压缩、打包压缩
+tar -zcvf my.tar.gz aaa/
+tar -zxvf my.tar.gz 
+tar -jcvf my.tar.bz aaa/
+tar -jxvf my.tar.bz
+
+查看系统中安装的rpm包
+rpm -qa | grep mysql
+
+8、查找
+查找可执行的命令：which ls
+查找可执行的命令和帮助的位置：whereis ls
+
+从某个文件夹开始查找
+find / -name "hadooop*"
+find / -name "hadooop*" -ls
+查找并删除
+find / -name "hadooop*" -ok rm {} \;
+find / -name "hadooop*" -exec rm {} \;
+查找用户为hadoop的文件
+find /usr -user hadoop -ls
+找用户为hadoop或者(-o)拥有组为root并且是文件夹类型的文件
+find /usr -user hadoop -o -group root -a -type d
+查找权限为777的文件
+find / -perm -777
+查看有谁在线（哪些人登陆到了服务器）
+who  查看当前在线
+last 查看最近的登陆历史记录
+
+9、cut命令
+[root@www ~]# cut -d'分隔字符' -f fields <==用于有特定分隔字符
+[root@www ~]# cut -c 字符区间            <==用于排列整齐的信息
+选项与参数：
+-d  ：后面接分隔字符。与 -f 一起使用；
+-f  ：依据 -d 的分隔字符将一段信息分割成为数段，用 -f 取出第几段的意思；
+-c  ：以字符 (characters) 的单位取出固定字符区间
+
+将 PATH 变量取出，我要找出第三和第五个路径。
+#echo $PATH | cut -d ':' -f 3,5
+将 PATH 变量取出，我要找出第五个路径。
+#echo $PATH | cut -d ':' -f 5
+将 PATH 变量取出，我要找出第三到最后一个路径。
+echo $PATH | cut -d ':' -f 3-
+将 PATH 变量取出，我要找出第一到第三个路径。
+#echo $PATH | cut -d ':' -f 1-3
+
+10、sort命令
+[root@www ~]# sort [-fbMnrtuk] [file or stdin]
+选项与参数：
+-f  ：忽略大小写的差异，例如 A 与 a 视为编码相同；
+-b  ：忽略最前面的空格符部分；
+-M  ：以月份的名字来排序，例如 JAN, DEC 等等的排序方法；
+-n  ：使用『纯数字』进行排序(默认是以文字型态来排序的)；
+-r  ：反向排序；
+-u  ：就是 uniq ，相同的数据中，仅出现一行代表；
+-t  ：分隔符，默认是用 [tab] 键来分隔；
+-k  ：以那个区间 (field) 来进行排序的意思
+/etc/passwd 内容是以 : 来分隔的，我想以第三栏来排序，该如何
+[root@www ~]# cat /etc/passwd | sort -t ':' -k 3
+默认是升序排序，如果要倒序排序，如下
+cat /etc/passwd | sort -t ':' -k 3nr
+
+如果要对/etc/passwd,先以第六个域的第2个字符到第4个字符进行正向排序，再基于第一个域进行反向排序。
+cat /etc/passwd |  sort -t':' -k 6.2,6.4 -k 1r   
+
+查看/etc/passwd有多少个shell:对/etc/passwd的第七个域进行排序，然后去重:
+cat /etc/passwd |  sort -t':' -k 7 -u  
+
+11、sed
+sed '2d' example-----删除example文件的第二行。 
+sed '2,$d' example-----删除example文件的第二行到末尾所有行
+sed '/test/'d example-----删除example文件所有包含test的行。
+sed 's/test/mytest/g' example-----在整行范围内把test替换为mytest。如果没有g标记，则只有每行第一个匹配的test被替换成mytest。
+sed -n 's/^test/mytest/p' example-----(-n)选项和p标志一起使用表示只打印那些发生替换的行。也就是说，如果某一行开头的test被替换成mytest，就打印它。
+sed 's/^192.168.0.1/&localhost/' example-----&符号表示替换换字符串中被找到的部份。所有以192.168.0.1开头的行都会被替换成它自已加 localhost，变成192.168.0.1localhost。
+$ sed -n '5,/^test/p' example-----打印从第五行开始到第一个包含以test开始的行之间的所有行。
+sed -e '1,5d' -e 's/test/check/' example-----(-e)选项允许在同一行里执行多条命令。如例子所示，第一条命令删除1至5行，第二条命令用check替换test。命令的执 行顺序对结果有影响。如果两个命令都是替换命令，那么第一个替换命令将影响第二个替换命令的结果。
+sed --expression='s/test/check/' --expression='/love/d' example-----一个比-e更好的命令是--expression。它能给sed表达式赋值。
+
+12、awk命令
+last -n 5 | awk  '{print $1}'读入有'\n'换行符分割的一条记录，然后将记录按指定的域分隔符划分域，$0则表示所有域,$1表示第一个域,$n表示第n个域。默认域分隔符是"空白键" 或 "[tab]键"
+cat /etc/passwd |awk  -F ':'  '{print $1}'  -F指定域分隔符为':'。
+cat /etc/passwd |awk  -F ':'  '{print $1"\t"$7}'而账户与shell之间以tab键分割
+cat /etc/passwd |awk  -F ':'  'BEGIN {print "name,shell"}  {print $1","$7} END {print "blue,/bin/nosh"}'先执行BEGING，然后读取文件，读入有/n换行符分割的一条记录，然后将记录按指定的域分隔符划分域，在执行END
+awk -F: '/root/' /etc/passwd 搜索/etc/passwd有root关键字的所有行，这种是pattern的使用示例，匹配了pattern(这里是root)的行才会执行action(没有指定action，默认输出每行的内容)。
+awk有许多内置变量用来设置环境信息，这些变量可以被改变，下面给出了最常用的一些变量。
+
+ 
+ARGC               命令行参数个数
+ARGV               命令行参数排列
+ENVIRON            支持队列中系统环境变量的使用
+FILENAME           awk浏览的文件名
+FNR                浏览文件的记录数
+FS                 设置输入域分隔符，等价于命令行 -F选项
+NF                 浏览记录的域的个数
+NR                 已读的记录数
+OFS                输出域分隔符
+ORS                输出记录分隔符
+RS                 控制记录分隔符
+统计/etc/passwd:文件名，每行的行号，每行的列数，对应的完整行内容:
+#awk  -F ':'  '{print "filename:" FILENAME ",linenumber:" NR ",columns:" NF ",linecontent:"$0}' /etc/passwd
+filename:/etc/passwd,linenumber:1,columns:7,linecontent:root:x:0:0:root:/root:/bin/bash
+filename:/etc/passwd,linenumber:2,columns:7,linecontent:daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+filename:/etc/passwd,linenumber:3,columns:7,linecontent:bin:x:2:2:bin:/bin:/bin/sh
+filename:/etc/passwd,linenumber:4,columns:7,linecontent:sys:x:3:3:sys:/dev:/bin/sh
+使用printf替代print,可以让代码更加简洁，易读
+ awk  -F ':'  '{printf("filename:%s,linenumber:%s,columns:%s,linecontent:%s\n",FILENAME,NR,NF,$0)}' /etc/passwd
+ 
+ 
+ 13、挂载命令：
+ 
+ 无论哪种配置，都需要先将光盘挂在到本地文件目录中
+mount -t iso9660 /dev/cdrom   /mnt/cdrom
+为了避免每次重启后都要手动mount，可以在/etc/fstab中加入一行挂载配置，即可自动挂载
+vi  /etc/fstab
+/dev/cdrom              /mnt/cdrom              iso9660 defaults        0 0			
+
+14、ifconfig安装
+安装centos 服务器版本没有ifconfig命令
+yum provides ifconfig
+输出样例:
+1 Loaded plugins: fastestmirror
+2 Loading mirror speeds from cached hostfile
+3  * base: centos.aol.in
+4  * extras: centos.aol.in
+5  * updates: centos.aol.in
+6 net-tools-2.0-0.17.20131004git.el7.x86_64 : Basic networking tools
+7 Repo        : @base
+8 Matched from:
+9 Filename    : /usr/sbin/ifconfig
+就像你在上面的输出中所看到的，net-tools包提供了ifconfig命令。因此，让我们安装net-tools包来使用ifconfig命令。
+yum install net-tools
+现在，你就可以像以往一样使用ifconfig命令了。
+ifconfig -a
+
+
+杂记：
+批量自动删除rpm包：
+rpm -qa | grep mysql | while read c; do rpm -e $c --nodeps; done
+
+minimal最小化安装
+eth0默认没有自启用
+修改配置文件
+onboot=true
+
+修改静态地址后发现无法ping外网
+需要设置网关
+route add default gw 192.168.33.1
+添加nameserver
+vi /etc/resolv.conf
+nameserver 192.168.33.1
+
+挂载光盘
+mkdir /mnt/cdrom
+mount -t iso9660 -o ro /dev/cdrom/ /mnt/cdrom 
+
+
+解决克隆后eth0不见的问题
+
+直接修改  /etc/sysconfig/network-script/ifcfg-eth0
+删掉UUID  HWADDR
+配置静态地址
+然后：
+rm -rf 　/etc/udev/rules.d/70-persistent-net.rules
+然后 reboot
