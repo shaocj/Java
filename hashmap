@@ -1,0 +1,52 @@
+ 
+    public static void main(String[] args) {
+        HashMap<String,Integer> map =new HashMap<>();
+        map.put("a", 1);
+        map.put("b", 2);
+        map.put("c", 3);
+        map.put("d", 4);
+         
+//       Map map=new HashMap();               
+//         map.put("a", "aaa");   
+//         map.put("b", "bbb");   
+//         map.put("c", "ccc");   
+//         map.put("d", "ddd");   
+         
+        //hashMap遍历方法1
+         Iterator<String> iterator = map.keySet().iterator();               
+         while (iterator.hasNext()) {   
+          Object key = iterator.next();   
+          System.out.println("map.get(key) is :"+map.get(key));   
+         }
+          
+         //遍历方法2
+         Set<Map.Entry<String, Integer>> set=map.entrySet();
+         Iterator<Map.Entry<String, Integer>> it=set.iterator();
+         while(it.hasNext()){
+          //System.out.println(list.get(0) ); 
+             Map.Entry<String, Integer> e=it.next();
+          System.out.println(e.getKey()+":"+e.getValue()); 
+         }
+          
+          System.out.println(map.containsValue(1) ); 
+          System.out.println(map.containsKey("a") ); 
+          System.out.println(map.size() );
+          System.out.println(map.remove("a") ); 
+          System.out.println(map.size() ); 
+          System.out.println(map.containsKey("a") ); 
+          System.out.println(map.containsValue(1) ); 
+           
+          //ArrayList <Integer> list =(ArrayList<Integer>)map.values();     
+          //上面会出现异常，因为map.values()返回的是一个Collection<Integer>对象，可用下面的方法解决
+          ArrayList <Integer> list =new ArrayList<Integer>(map.values());   
+          Iterator <Integer>ite=list.iterator();
+          while(ite.hasNext()){
+              //System.out.println(list.get(0) ); 
+              System.out.println(ite.next() ); 
+          }
+          map.clear();
+          System.out.println(map.isEmpty() ); 
+           
+    }
+ 
+}
