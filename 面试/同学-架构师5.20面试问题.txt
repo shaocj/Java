@@ -1,0 +1,77 @@
+（1） 默认情况下，各个节点的负载不均衡（任务数目不同），有的节点很多任务在跑，有的没有任务，怎样让各个节点任务数目尽可能均衡呢？
+
+答： 默认情况下，资源调度器处于批调度模式下，即一个心跳会尽可能多的分配任务，这样，优先发送心跳过来的节点将会把任务领光（前提：任务数目远小于集群可以同时运行的任务数量），为了避免该情况发生，可以按照以下说明配置参数：
+
+如果采用的是fair scheduler，可在yarn-site.xml中，将参数yarn.scheduler.fair.max.assign设置为1（默认是-1,）
+
+如果采用的是capacity scheduler（默认调度器），则不能配置，目前该调度器不带负载均衡之类的功能。
+
+当然，从hadoop集群利用率角度看，该问题不算问题，因为一般情况下，用户任务数目要远远大于集群的并发处理能力的，也就是说，通常情况下，集群时刻处于忙碌状态，没有节点一直空闲着。
+
+ 
+
+（2）某个节点上任务数目太多，资源利用率太高，怎么控制一个节点上的任务数目?
+
+答：一个节点上运行的任务数目主要由两个因素决定，一个是NodeManager可使用的资源总量，一个是单个任务的资源需求量，比如一个NodeManager上可用资源为8 GB内存，8 cpu，单个任务资源需求量为1 GB内存，1cpu，则该节点最多运行8个任务。
+
+NodeManager上可用资源是由管理员在配置文件yarn-site.xml中配置的，相关参数如下：
+
+yarn.nodemanager.resource.memory-mb：总的可用物理内存量，默认是8096
+
+yarn.nodemanager.resource.cpu-vcores：总的可用CPU数目，默认是8
+
+对于MapReduce而言，每个作业的任务资源量可通过以下参数设置：
+
+mapreduce.map.memory.mb：物理内存量，默认是1024
+
+mapreduce.map.cpu.vcores：CPU数目，默认是1
+
+注：以上这些配置属性的详细介绍可参考文章：Hadoop YARN配置参数剖析(1)—RM与NM相关参数。
+
+默认情况，各个调度器只会对内存资源进行调度，不会考虑CPU资源，你需要在调度器配置文件中进行相关设置，具体可参考文章：Hadoop YARN配置参数剖析(4)—Fair Scheduler相关参数和Hadoop YARN配置参数剖析(5)—Capacity Scheduler相关参数。
+
+ 
+
+（3）如何设置单个任务占用的内存量和CPU数目？
+
+答：对于MapReduce而言，每个作业的任务资源量可通过以下参数设置：
+
+mapreduce.map.memory.mb：物理内存量，默认是1024
+
+mapreduce.map.cpu.vcores：CPU数目，默认是1
+
+需要注意的是，默认情况，各个调度器只会对内存资源进行调度，不会考虑CPU资源，你需要在调度器配置文件中进行相关设置。
+
+ 
+
+（4） 用户给任务设置的内存量为1000MB，为何最终分配的内存却是1024MB？
+
+答：为了易于管理资源和调度资源，Hadoop YARN内置了资源规整化算法，它规定了最小可申请资源量、最大可申请资源量和资源规整化因子，如果应用程序申请的资源量小于最小可申请资源量，则YARN会将其大小改为最小可申请量，也就是说，应用程序获得资源不会小于自己申请的资源，但也不一定相等；如果应用程序申请的资源量大于最大可申请资源量，则会抛出异常，无法申请成功；规整化因子是用来规整化应用程序资源的，应用程序申请的资源如果不是该因子的整数倍，则将被修改为最小的整数倍对应的值，公式为ceil(a/b)*b，其中a是应用程序申请的资源，b为规整化因子。
+
+以上介绍的参数需在yarn-site.xml中设置，相关参数如下：
+
+yarn.scheduler.minimum-allocation-mb：最小可申请内存量，默认是1024
+
+yarn.scheduler.minimum-allocation-vcores：最小可申请CPU数，默认是1
+
+yarn.scheduler.maximum-allocation-mb：最大可申请内存量，默认是8096
+
+yarn.scheduler.maximum-allocation-vcores：最大可申请CPU数，默认是4
+
+对于规整化因子，不同调度器不同，具体如下：
+
+FIFO和Capacity Scheduler，规整化因子等于最小可申请资源量，不可单独配置。
+
+Fair Scheduler：规整化因子通过参数yarn.scheduler.increment-allocation-mb和yarn.scheduler.increment-allocation-vcores设置，默认是1024和1。
+
+通过以上介绍可知，应用程序申请到资源量可能大于资源申请的资源量，比如YARN的最小可申请资源内存量为1024，规整因子是1024，如果一个应用程序申请1500内存，则会得到2048内存，如果规整因子是512，则得到1536内存。
+
+ 
+
+（5）我们使用的是Fairscheduler，配置了多个队列，当用户提交一个作业，指定的队列不存在时，Fair Scheduler会自动创建一个新队列而不是报错（比如报错：队列XXX不存在），如何避免这种情况发生？
+
+答：在yarn-site.xml中设置yarn.scheduler.fair.allow-undeclared-pools，将它的值配置为false（默认是true）。
+
+ 
+
+（6）使用Hadoop 2.0过程中，遇到了错误，怎样排查错误？

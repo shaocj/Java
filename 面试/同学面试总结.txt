@@ -1,0 +1,30 @@
+2016.5.31
+1，mapreduce的运行流程
+2，hdfs读写流程
+====下载文件流程
+1，想namenode申请下载文件
+2,返回目标文件的元数据
+3，向namenode申请建立连接，读取block1（读入socketinputstream写的是fileoutputstream）
+4,datanode上进行传输数据（fileputstream，socketoutputstream）
+====文件上传流程
+1，想namenode请求上传文件
+2，namenode相应可以上传文件
+3，想namenode进行RPC通信，请求上传第一个block，请求返回datanode
+4，返回namenode所在的ip
+5，请求建立block传输通道channel
+3，日志流清洗多少个mapreduce串联
+4，hive的比较，比如join   group by
+5，hbase的操作api
+6，hbase和mysql的区别（非关系型数据库 和  非关系型数据库的区别）
+7，spark的workcount执行流程
+8，线程的实现方式
+9，就收数据为啥用kafka
+10，线程和进程的区别从操作系统层面说
+11，排序算法有哪些
+12，jvm收集器有哪些
+13，内存是怎么分配的
+##############################################################################################
+2016.6.1
+1.关系型数据库能够集群为啥还要用非关系型数据库呢，如mysql和hbase 
+2.数据采集为什么不直接采集到hdfs而是采集到kafka里面？
+##############################################################################################
