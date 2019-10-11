@@ -1,0 +1,34 @@
+用户信息表
+
+
+1,nv,18,吃棒棒糖
+2,gong,18,养金鱼
+3,nv,20,做头发
+4,ry,18,自high
+5,gong,18,养乌龟
+6,gong,19,养鸭子
+7,gong,38,养鸡鸡
+8,nv,22,做头发
+9,nv,23,买衣服
+10,ry,28,下围棋
+11,ry,18,跳舞
+
+
+每种性别人群中，年龄最大的两个人
+
+select id,xb,age,hobby from t1 group by xb order by age
+
+row_number() over (partition by xb order by age asc) as od 
+
+                    od
+1,nv,18,吃棒棒糖     1 
+3,nv,20,做头发		 2
+8,nv,22,做头发       3
+9,nv,23,买衣服       4
+2,gong,18,养金鱼     1
+5,gong,18,养乌龟     2
+6,gong,19,养鸭子     3
+7,gong,38,养鸡鸡     4
+
+
+select * from t_tmp where od>=3
