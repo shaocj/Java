@@ -28,7 +28,7 @@ jps
 4828 -- main class information unavailable
 4860 Jps
 
-通过一个IDE  建立一个remote application
+通过一个IDE  建立一个remote application（edit configuration->+->remote->修改location及port）
 172.16.0.11 10000
 在本地的代码打断点
 debug按钮开始调试
